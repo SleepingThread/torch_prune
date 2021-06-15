@@ -66,13 +66,18 @@ if checkpoint_path is not None:
 
 net = net.to(device)
 
-if use_vd:
-    vd = VariationalDropout(**vd_config["constructor"])
-    print("VD applied")
-
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
+
+if use_vd:
+    modules = [(net.module.classifier, None)]
+    for _i, _f in enumerate(net.module.features):
+        if isinstance(_f, torch.nn.Conv2d):
+            modules.append((_f, None))
+
+    vd = VariationalDropout(modules, **vd_config["constructor"])
+    print("VD applied")
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.1,
