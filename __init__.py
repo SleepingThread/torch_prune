@@ -64,7 +64,7 @@ class VariationalDropout(object):
         _mask = getattr(module, _w_name + "_mask")
         _la = getattr(module, _w_name + "_logalpha")
         with torch.no_grad():
-            _mask[:] = _la < 3.
+            _mask[:] = _la < self.logalpha_threshold
 
         _weight = getattr(module, _w_name + "_orig") * _mask
         setattr(module, _w_name, _weight)
