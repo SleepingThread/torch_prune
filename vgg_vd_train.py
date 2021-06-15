@@ -65,8 +65,6 @@ if checkpoint_path is not None:
     net.load_state_dict(sd)
     print("Model loaded")
 
-net = net.to(device)
-
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
     cudnn.benchmark = True
@@ -79,6 +77,8 @@ if use_vd:
 
     vd = VariationalDropout(modules, **vd_config["constructor"])
     print("VD applied")
+
+net = net.to(device)
 
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.1,

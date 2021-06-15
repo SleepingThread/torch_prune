@@ -81,7 +81,8 @@ class VariationalDropout(object):
         _la = module.weight_logalpha
 
         _vd_add = torch.sqrt((_inp*_inp)@(torch.exp(_la)*_w*_w).t() + 1.0e-14)
-        _vd_add = torch.normal(0., self.normal_stddev, _vd_add.shape)*_vd_add
+        _rand = torch.normal(0., self.normal_stddev, _vd_add.shape, device=_vd_add.device)
+        _vd_add = _rand*_vd_add
 
         return outputs + _vd_add
 
@@ -103,6 +104,10 @@ class VariationalDropout(object):
         else:
             _vd_add = F.conv2d(_inp, _w, None, module.stride,
                                module.padding, module.dilation, module.groups)
+
+        _vd_add = torch.sqrt(_vd_add + 1.0e-14)
+        _rand = torch.normal(0., self.normal_stddev, _vd_add.shape, device=_vd_add.device)
+        _vd_add = _rand * _vd_add
 
         return outputs + _vd_add
 
