@@ -62,11 +62,13 @@ if checkpoint_path is not None:
     sd = torch.load(checkpoint_path, map_location=torch.device("cpu"))
     sd = OrderedDict([(_k[len("module."):], _v) for _k, _v in sd.items()])
     net.load_state_dict(sd)
+    print("Model loaded")
 
 net = net.to(device)
 
 if use_vd:
-    vd = VariationalDropout(net)
+    vd = VariationalDropout(**vd_config["constructor"])
+    print("VD applied")
 
 if device == 'cuda':
     net = torch.nn.DataParallel(net)
