@@ -16,7 +16,8 @@ from collections import OrderedDict
 
 from . import VariationalDropout
 from .vgg import VGG
-from .vgg_train_config import data_path, tb_logdir, checkpoint_path, use_vd, vd_config
+from .vgg_train_config import data_path, tb_logdir, checkpoint_path, use_vd, vd_config, \
+    scheduler_T_max
 
 
 device = 'cuda' if torch.cuda.is_available() else 'cpu'
@@ -82,7 +83,7 @@ if use_vd:
 criterion = nn.CrossEntropyLoss()
 optimizer = optim.SGD(net.parameters(), lr=0.1,
                       momentum=0.9, weight_decay=5e-4)
-scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=200)
+scheduler = torch.optim.lr_scheduler.CosineAnnealingLR(optimizer, T_max=scheduler_T_max)
 
 # Training
 def train(epoch):
