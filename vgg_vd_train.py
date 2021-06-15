@@ -111,8 +111,8 @@ def train(epoch):
     # tensorboard
     train_loss = (train_loss/(batch_idx+1))
     train_accuracy = 100.*correct/total
-    train_writer.add_scalar("loss", train_loss)
-    train_writer.add_scalar("acc", train_accuracy)
+    train_writer.add_scalar("loss", train_loss, epoch)
+    train_writer.add_scalar("acc", train_accuracy, epoch)
 
     for _name, _val in net.named_parameters():
         train_writer.add_histogram(_name, _val, epoch)
@@ -149,7 +149,7 @@ def test(epoch):
     test_loss = (test_loss/(batch_idx+1))
     test_accuracy = 100.*correct/total
 
-    test_writer.add_scalar("loss", test_loss)
-    test_writer.add_scalar("acc", test_accuracy)
+    test_writer.add_scalar("loss", test_loss, epoch)
+    test_writer.add_scalar("acc", test_accuracy, epoch)
 
     test_writer.flush()
